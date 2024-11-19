@@ -1,8 +1,13 @@
 import React from "react";
 import {AppBar, MenuItem, Select, Toolbar, Typography} from "@mui/material";
 import {Link} from "react-router-dom";
+import LogoutButton from "./LogoutButton";
+import {useSelector} from "react-redux";
+import {useAppSelector} from "../../hooks";
 
 const Navbar = () => {
+  const user = useAppSelector((state) => state.auth.user);
+
   return (
     <AppBar position="static">
       <Toolbar>
@@ -17,7 +22,9 @@ const Navbar = () => {
           <MenuItem value="en">English</MenuItem>
           <MenuItem value="ru">Русский</MenuItem>
         </Select>
-        <Link to={'/login'}>Login</Link>
+        {user && <span>{user.email}</span>}
+        {!user && <Link to={'/login'}>Login</Link>}
+        <LogoutButton />
       </Toolbar>
     </AppBar>
   )
