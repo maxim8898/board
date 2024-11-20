@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import User from "../interfaces/User";
-import {redirect} from "react-router-dom";
 
 interface AuthState {
   user: User | null;
@@ -44,7 +43,6 @@ const authSlice = createSlice({
     },
     logout(state) {
       state.user = null;
-      redirect('/');
     },
   },
 });

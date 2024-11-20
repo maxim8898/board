@@ -1,15 +1,32 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../config/fb_config";
 import { registerStart, registerSuccess, registerFailure } from "../../slices/authSlice";
 import {useAppDispatch} from "../../hooks";
-import {redirect} from "react-router-dom";
+import {redirect, useNavigate} from "react-router-dom";
+import {Box, Button, ButtonGroup, Container, IconButton, Input, InputAdornment} from "@mui/material";
+import {Visibility, VisibilityOff} from "@mui/icons-material";
+import {useSelector} from "react-redux";
+import {RootState} from "../../store";
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const dispatch = useAppDispatch()
+  const [showPassword, setShowPassword] = useState(false);
+  const { user, loading } = useSelector((state: RootState) => state.auth);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
+
+  const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,37 +50,92 @@ const Register: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  }, [user, dispatch, navigate]);
+
   return (
-    <form onSubmit={handleRegister}>
-      <div>
-        <label>Email</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label>Password</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label>Confirm Password</label>
-        <input
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-        />
-      </div>
-      <button type="submit">Register</button>
-    </form>
+    <Box
+      sx={{
+        backgroundColor: '#F5F5F5',
+        minHeight: '100vh',
+      }}
+    >
+      <Container maxWidth="xl" sx={{ justifyItems: 'center', py: 3 }}>
+        <Box
+          component="form"
+          sx={{'& > :not(style)': {m: 1}, display: 'flex', flexDirection: 'column'}}
+          noValidate
+          autoComplete="off"
+          onSubmit={handleRegister}
+        >
+          <Input
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <Input
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            type={showPassword ? 'text' : 'password'}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label={
+                    showPassword ? 'hide the password' : 'display the password'
+                  }
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  onMouseUp={handleMouseUpPassword}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff/> : <Visibility/>}
+                </IconButton>
+              </InputAdornment>
+            }
+            required
+          />
+          <Input
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Confirm Password"
+            type={showPassword ? 'text' : 'password'}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label={
+                    showPassword ? 'hide the password' : 'display the password'
+                  }
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  onMouseUp={handleMouseUpPassword}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff/> : <Visibility/>}
+                </IconButton>
+              </InputAdornment>
+            }
+            required
+          />
+          <ButtonGroup variant="text" sx={{ alignSelf: 'center' }}>
+            <Button type="submit" disabled={loading} variant="contained">
+              {loading ? "Signing up..." : "Sign up"}
+            </Button>
+            <Button
+              disabled={loading}
+              onClick={() => navigate('/login')}
+              variant="outlined"
+            >
+              Sign in
+            </Button>
+          </ButtonGroup>
+        </Box>
+      </Container>
+    </Box>
   );
 };
 

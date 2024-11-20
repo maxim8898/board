@@ -1,16 +1,37 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../config/fb_config";
 import { RootState } from "../../store";
 import { loginStart, loginSuccess, loginFailure } from "../../slices/authSlice";
-import {Link} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Box, Button, ButtonGroup, Container, IconButton, Input, InputAdornment } from "@mui/material";
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
+
+  const { user, loading } = useSelector((state: RootState) => state.auth);
+
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  }, [user, dispatch, navigate]);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
+
+  const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,31 +49,63 @@ const Login: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleLogin}>
-      <div>
-        <label>Email</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label>Password</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
-      <button type="submit" disabled={loading}>
-        {loading ? "Logging in..." : "Login"}
-      </button>
-      <span> Or <Link to={'/register'}>Register</Link></span>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-    </form>
+      <Box
+        sx={{
+          backgroundColor: '#F5F5F5',
+          minHeight: '100vh',
+        }}
+      >
+        <Container maxWidth="xl" sx={{ justifyItems: 'center', py: 3 }}>
+          <Box
+            component="form"
+            sx={{'& > :not(style)': {m: 1}, display: 'flex', flexDirection: 'column'}}
+            noValidate
+            autoComplete="off"
+            onSubmit={handleLogin}
+          >
+            <Input
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <Input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              type={showPassword ? 'text' : 'password'}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label={
+                      showPassword ? 'hide the password' : 'display the password'
+                    }
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    onMouseUp={handleMouseUpPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff/> : <Visibility/>}
+                  </IconButton>
+                </InputAdornment>
+              }
+              required
+            />
+            <ButtonGroup variant="text" sx={{ alignSelf: 'center' }}>
+              <Button type="submit" disabled={loading} variant="contained">
+                {loading ? "Signing in..." : "Sign in"}
+              </Button>
+              <Button
+                disabled={loading}
+                onClick={() => navigate('/register')}
+                variant="outlined"
+              >
+                Sign up
+              </Button>
+            </ButtonGroup>
+          </Box>
+        </Container>
+      </Box>
   );
 };
 
