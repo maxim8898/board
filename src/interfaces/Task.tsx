@@ -1,4 +1,4 @@
-export default interface Task {
+export interface Task {
   id: string,
   board: string,
   title: string,
@@ -6,3 +6,5 @@ export default interface Task {
   status: boolean,
   weight: number,
 }
+
+export default Task;

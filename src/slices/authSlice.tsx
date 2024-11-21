@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import User from "../interfaces/User";
+import { User } from "../interfaces";
 
 interface AuthState {
   user: User | null;
@@ -56,4 +56,5 @@ export const {
   registerSuccess,
   registerFailure,
 } = authSlice.actions;
+
 export default authSlice.reducer;

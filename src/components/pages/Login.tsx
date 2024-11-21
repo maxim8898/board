@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import { FC, MouseEvent, FormEvent, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../config/fb_config";
@@ -8,32 +8,26 @@ import { useNavigate } from "react-router-dom";
 import { Box, Button, ButtonGroup, Container, IconButton, Input, InputAdornment } from "@mui/material";
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
-const Login: React.FC = () => {
+export const Login: FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { user, loading } = useSelector((state: RootState) => state.auth);
-
-  useEffect(() => {
-    if (user) {
-      navigate('/');
-    }
-  }, [user, dispatch, navigate]);
+  const { loading } = useSelector((state: RootState) => state.auth);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
 
-  const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseUpPassword = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     dispatch(loginStart());
     try {
@@ -52,7 +46,7 @@ const Login: React.FC = () => {
       <Box
         sx={{
           backgroundColor: '#F5F5F5',
-          minHeight: '100vh',
+          minHeight: 'calc(100vh - 72px)',
         }}
       >
         <Container maxWidth="xl" sx={{ justifyItems: 'center', py: 3 }}>

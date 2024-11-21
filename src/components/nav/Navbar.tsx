@@ -1,24 +1,23 @@
-import React from "react";
-import {AppBar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Typography} from "@mui/material";
-import {useAppSelector} from "../../hooks";
+import { MouseEvent, useState } from "react";
+import { AppBar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
+import { useAppSelector } from "../../hooks";
 import { Menu as MenuIcon, Logout as LogoutIcon, Login as LoginIcon } from '@mui/icons-material';
-import {useDispatch} from "react-redux";
-import {signOut} from "firebase/auth";
-import {auth} from "../../config/fb_config";
-import {logout} from "../../slices/authSlice";
-import {Link, redirect} from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { signOut } from "firebase/auth";
+import { auth } from "../../config/fb_config";
+import { logout } from "../../slices/authSlice";
+import { Link } from "react-router-dom";
 
-const Navbar = () => {
+export const Navbar = () => {
   const user = useAppSelector((state) => state.auth.user);
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const dispatch = useDispatch();
 
   const handleLogout = async () => {
     await signOut(auth);
     dispatch(logout());
-    redirect('/');
   };
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+  const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
 
@@ -27,8 +26,8 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position="static">
-      <Container maxWidth="xl">
+    <AppBar position="static" sx={{ height: '72px' }}>
+      <Container maxWidth="xl" sx={{ height: '100%' }}>
         <Toolbar disableGutters>
           <Typography
             variant="h6"

@@ -1,34 +1,35 @@
-import React, {useEffect, useState} from "react";
+import { FC, MouseEvent, FormEvent, useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../config/fb_config";
 import { registerStart, registerSuccess, registerFailure } from "../../slices/authSlice";
-import {useAppDispatch} from "../../hooks";
-import {redirect, useNavigate} from "react-router-dom";
-import {Box, Button, ButtonGroup, Container, IconButton, Input, InputAdornment} from "@mui/material";
-import {Visibility, VisibilityOff} from "@mui/icons-material";
-import {useSelector} from "react-redux";
-import {RootState} from "../../store";
+import { useAppDispatch } from "../../hooks";
+import { redirect, useNavigate } from "react-router-dom";
+import { Box, Button, ButtonGroup, Container, IconButton, Input, InputAdornment } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
-const Register: React.FC = () => {
+export const Register: FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const { user, loading } = useSelector((state: RootState) => state.auth);
+  const { loading } = useSelector((state: RootState) => state.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
 
-  const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseUpPassword = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
 
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -50,17 +51,11 @@ const Register: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    if (user) {
-      navigate('/');
-    }
-  }, [user, dispatch, navigate]);
-
   return (
     <Box
       sx={{
         backgroundColor: '#F5F5F5',
-        minHeight: '100vh',
+        minHeight: 'calc(100vh - 72px)',
       }}
     >
       <Container maxWidth="xl" sx={{ justifyItems: 'center', py: 3 }}>

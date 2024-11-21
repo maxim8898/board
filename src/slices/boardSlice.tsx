@@ -1,6 +1,5 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import Board from "../interfaces/Board";
-import BoardStore from "../interfaces/BoardStore";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { Board, BoardStore } from "../interfaces";
 import { set, ref } from "firebase/database";
 import { database } from "../config/fb_config";
 

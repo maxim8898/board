@@ -1,13 +1,10 @@
-import React from 'react';
+import { FC } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import {BrowserRouter, Routes, Route} from "react-router-dom";
-import Navbar from "./components/nav/Navbar";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Navbar } from "./components/nav";
 import { store } from "./store";
-import { Provider } from 'react-redux'
-import Login from "./components/pages/Login";
-import Register from "./components/pages/Register";
-import { AuthContextProvider } from "./contexts/AuthContext";
-import Home from "./components/pages/Home";
+import { Provider } from 'react-redux';
+import { Login, Register, Home, RestrictedRoute, NonRestrictedRoute } from "./components/pages";
 
 const theme = createTheme({
   components: {
@@ -21,7 +18,7 @@ const theme = createTheme({
   }
 });
 
-const App: React.FC = () => {
+const App: FC = () => {
   return (
     <BrowserRouter>
       <Provider store={store}>
@@ -29,23 +26,22 @@ const App: React.FC = () => {
             <Navbar />
             <Routes>
               <Route path='/' element={
-                <AuthContextProvider>
+                <RestrictedRoute>
                   <Home />
-                </AuthContextProvider>
+                </RestrictedRoute>
               } />
               <Route path='/login' element={
-                <AuthContextProvider>
+                <NonRestrictedRoute>
                   <Login />
-                </AuthContextProvider>
+                </NonRestrictedRoute>
               } />
               <Route path='/register' element={
-                <AuthContextProvider>
+                <NonRestrictedRoute>
                   <Register />
-                </AuthContextProvider>
+                </NonRestrictedRoute>
               } />
             </Routes>
           </ThemeProvider>
-
       </Provider>
     </BrowserRouter>
   );

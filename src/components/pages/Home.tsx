@@ -1,10 +1,10 @@
-import React from "react";
-import {Box, Typography} from "@mui/material";
+import { FC } from "react";
+import { Box, Typography } from "@mui/material";
 
 
-const Home: React.FC = () => {
+export const Home: FC = () => {
   return(
-    <Box p={2}>
+    <Box p={2} sx={{ minHeight: 'calc(100vh - 72px)' }}>
       <Typography variant="h4">Welcome to MyApp!</Typography>
       <Typography variant="body1">
         This is a simple starting page with a top navigation bar.
