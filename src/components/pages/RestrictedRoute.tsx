@@ -1,8 +1,10 @@
-import { ReactElement, FC, useLayoutEffect } from "react";
+import { ReactElement, FC, useEffect } from "react";
 import { getAuth } from "firebase/auth";
-import { useDispatch } from "react-redux";
-import { loginSuccess } from "../../slices/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { startSpin, stopSpin, loginSuccess } from "../../slices/authSlice";
 import { useNavigate } from "react-router-dom";
+import { RootState } from "../../store";
+import { Box, CircularProgress } from "@mui/material";
 
 interface RestrictedRouteProps {
   children: ReactElement,
@@ -12,8 +14,11 @@ export const RestrictedRoute: FC<RestrictedRouteProps> = ({ children }: Restrict
   const dispatch = useDispatch();
   const auth = getAuth();
   const navigate = useNavigate();
+  const { loading } = useSelector((state: RootState) => state.auth);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
+    dispatch(startSpin());
+
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         dispatch(loginSuccess({
@@ -21,6 +26,7 @@ export const RestrictedRoute: FC<RestrictedRouteProps> = ({ children }: Restrict
           uid: user.uid,
         }));
       } else {
+        dispatch(stopSpin());
         navigate('/login');
       }
     })
@@ -28,10 +34,26 @@ export const RestrictedRoute: FC<RestrictedRouteProps> = ({ children }: Restrict
     return () => { unsubscribe() }
   }, [dispatch, auth, navigate]);
 
-  return (
-    <>
-      { children }
-    </>
-  )
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "calc(100vh - 72px)",
+          backgroundColor: '#F5F5F5'
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  } else {
+    return (
+      <>
+        {children}
+      </>
+    )
+  }
 }
 export default RestrictedRoute;

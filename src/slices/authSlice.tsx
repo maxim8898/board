@@ -44,6 +44,12 @@ const authSlice = createSlice({
     logout(state) {
       state.user = null;
     },
+    startSpin(state) {
+      state.loading = true;
+    },
+    stopSpin(state) {
+      state.loading = false;
+    },
   },
 });
 
@@ -55,6 +61,8 @@ export const {
   registerStart,
   registerSuccess,
   registerFailure,
+  startSpin,
+  stopSpin,
 } = authSlice.actions;
 
 export default authSlice.reducer;
