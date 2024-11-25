@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 
 export const Navbar = () => {
   const user = useAppSelector((state) => state.auth.user);
-  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [burgerAnchorEl, setBurgerAnchorEl] = useState<null | HTMLElement>(null);
   const dispatch = useDispatch();
 
   const handleLogout = async () => {
@@ -18,11 +18,11 @@ export const Navbar = () => {
     dispatch(logout());
   };
   const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
+    setBurgerAnchorEl(event.currentTarget);
   };
 
   const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
+    setBurgerAnchorEl(null);
   };
 
   return (
@@ -60,7 +60,7 @@ export const Navbar = () => {
             </IconButton>
             <Menu
               id="menu-appbar"
-              anchorEl={anchorElNav}
+              anchorEl={burgerAnchorEl}
               anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'left',
@@ -70,7 +70,7 @@ export const Navbar = () => {
                 vertical: 'top',
                 horizontal: 'left',
               }}
-              open={Boolean(anchorElNav)}
+              open={Boolean(burgerAnchorEl)}
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: 'block', md: 'none' } }}
             >

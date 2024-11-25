@@ -1,5 +1,5 @@
 import { ReactElement, FC, useEffect } from "react";
-import { getAuth } from "firebase/auth";
+import { auth } from '../../config/fb_config';
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess, logout, startSpin, stopSpin } from "../../slices/authSlice";
 import { useNavigate } from "react-router-dom";
@@ -12,14 +12,13 @@ interface NonRestrictedRouteProps {
 
 export const NonRestrictedRoute: FC<NonRestrictedRouteProps> = ({ children }: NonRestrictedRouteProps) => {
   const dispatch = useDispatch();
-  const auth = getAuth();
   const navigate = useNavigate();
   const { loading } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     dispatch(startSpin());
 
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    return auth.onAuthStateChanged((user) => {
       if (user) {
         dispatch(loginSuccess({
           email: user.email,
@@ -31,9 +30,7 @@ export const NonRestrictedRoute: FC<NonRestrictedRouteProps> = ({ children }: No
         dispatch(stopSpin());
       }
     })
-
-    return () => { unsubscribe() }
-  }, [dispatch, auth, navigate]);
+  }, [dispatch, navigate]);
 
   if (loading) {
     return (

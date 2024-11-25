@@ -1,5 +1,5 @@
 import { ReactElement, FC, useEffect } from "react";
-import { getAuth } from "firebase/auth";
+import { auth } from '../../config/fb_config';
 import { useDispatch, useSelector } from "react-redux";
 import { startSpin, stopSpin, loginSuccess } from "../../slices/authSlice";
 import { useNavigate } from "react-router-dom";
@@ -12,14 +12,13 @@ interface RestrictedRouteProps {
 
 export const RestrictedRoute: FC<RestrictedRouteProps> = ({ children }: RestrictedRouteProps) => {
   const dispatch = useDispatch();
-  const auth = getAuth();
   const navigate = useNavigate();
   const { loading } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     dispatch(startSpin());
 
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    return auth.onAuthStateChanged((user) => {
       if (user) {
         dispatch(loginSuccess({
           email: user.email,
@@ -30,9 +29,7 @@ export const RestrictedRoute: FC<RestrictedRouteProps> = ({ children }: Restrict
         navigate('/login');
       }
     })
-
-    return () => { unsubscribe() }
-  }, [dispatch, auth, navigate]);
+  }, [dispatch, navigate]);
 
   if (loading) {
     return (
