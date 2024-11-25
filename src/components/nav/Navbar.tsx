@@ -119,11 +119,6 @@ export const Navbar = () => {
                   </IconButton>
               </>
             }
-            { !user &&
-              <Link to={'/login'} style={{ textDecoration: 'none', color: 'white' }}>
-                <LoginIcon />
-              </Link>
-            }
           </Box>
         </Toolbar>
       </Container>
