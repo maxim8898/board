@@ -1,10 +1,10 @@
-import React from 'react';
-import { Typography, Box } from '@mui/material';
+import { FC } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Navbar from "./components/nav/Navbar";
-import store from "./store";
-import { Provider } from 'react-redux'
+import { Navbar } from "./components/nav";
+import { store } from "./store";
+import { Provider } from 'react-redux';
+import { Login, Register, Home, RestrictedRoute, NonRestrictedRoute } from "./components/pages";
 
 const theme = createTheme({
   components: {
@@ -18,25 +18,30 @@ const theme = createTheme({
   }
 });
 
-const App: React.FC = () => {
-
+const App: FC = () => {
   return (
     <BrowserRouter>
       <Provider store={store}>
-        <ThemeProvider theme={theme}>
-          <Navbar />
-
-          <Routes>
-            <Route path='/' element={
-              <Box p={2}>
-                <Typography variant="h4">Welcome to MyApp!</Typography>
-                <Typography variant="body1">
-                  This is a simple starting page with a top navigation bar.
-                </Typography>
-              </Box>
-            } />
-          </Routes>
-        </ThemeProvider>
+          <ThemeProvider theme={theme}>
+            <Navbar />
+            <Routes>
+              <Route path='/' element={
+                <RestrictedRoute>
+                  <Home />
+                </RestrictedRoute>
+              } />
+              <Route path='/login' element={
+                <NonRestrictedRoute>
+                  <Login />
+                </NonRestrictedRoute>
+              } />
+              <Route path='/register' element={
+                <NonRestrictedRoute>
+                  <Register />
+                </NonRestrictedRoute>
+              } />
+            </Routes>
+          </ThemeProvider>
       </Provider>
     </BrowserRouter>
   );
