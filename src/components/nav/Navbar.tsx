@@ -1,12 +1,11 @@
 import { MouseEvent, useState } from "react";
 import { AppBar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
 import { useAppSelector } from "../../hooks";
-import { Menu as MenuIcon, Logout as LogoutIcon, Login as LoginIcon } from '@mui/icons-material';
+import { Menu as MenuIcon, Logout as LogoutIcon } from '@mui/icons-material';
 import { useDispatch } from "react-redux";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/fb_config";
 import { logout } from "../../slices/authSlice";
-import { Link } from "react-router-dom";
 
 export const Navbar = () => {
   const user = useAppSelector((state) => state.auth.user);
