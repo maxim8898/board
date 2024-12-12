@@ -1,15 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import {Board, BoardStore} from "../interfaces";
 
+const initialState: BoardStore = {
+  boards: {},
+  active: 'd25a309a-60c4-49c7-acd6-40149feed84d',
+  loading: false,
+  isModalOpen: false,
+  currentModalForm: '',
+}
+
 export const boardSlice = createSlice({
   name: 'board',
-  initialState: {
-    boards: {},
-    active: '',
-    loading: false,
-    isModalOpen: false,
-    currentModalForm: '',
-  },
+  initialState: initialState,
   reducers: {
     addBoard: (state: BoardStore, action: PayloadAction<{id: string, board: Board}>) => {
       state.boards[action.payload.id] = action.payload.board;
@@ -27,9 +29,9 @@ export const boardSlice = createSlice({
     stopSpin(state: BoardStore) {
       state.loading = false;
     },
-    openModal(state: BoardStore, action: PayloadAction<string>) {
+    openModal(state: BoardStore, action: PayloadAction<{ formId: string, formProps?: any }>) {
       state.isModalOpen = true;
-      state.currentModalForm = action.payload;
+      state.currentModalForm = action.payload.formId;
     },
     closeModal(state: BoardStore) {
       state.isModalOpen = false;

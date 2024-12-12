@@ -7,7 +7,7 @@ export interface Section {
   weight: number,
   allow_add: boolean,
   status: boolean,
-  tasks: Map<string, Task>
+  tasks: Record<string, Task>
 }
 
 export default Section;

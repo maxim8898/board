@@ -23,10 +23,14 @@ export const BoardForm: FC = () => {
   const onSubmit = async (data: BoardFormInputs) => {
     const boardId = uuid();
     const boardsRef = ref(database, `/boards/${boardId}`);
-    const board = {id: boardId, name: data.title, status: true, columns: {}};
+    const board = {id: boardId, name: data.title, status: true, columns: {
+      'todo': { id: 'todo', name: 'To Do', board: boardId, weight: 0, allow_add: true, status: true, tasks: {}},
+      'in-progress': { id: 'in-progress', name: 'In Progress', board: boardId, weight: 1, allow_add: false, status: true, tasks: {}},
+      'done': { id: 'done', name: 'Done', board: boardId, weight: 2, allow_add: false, status: true, tasks: {}},
+    }};
     await set(boardsRef, {...board});
-    dispatch(closeModal());
     dispatch(setActive(boardId));
+    dispatch(closeModal());
   }
 
   return(
