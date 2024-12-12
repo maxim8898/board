@@ -1,14 +1,28 @@
-import { MouseEvent, useState } from "react";
-import { AppBar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
+import React, { MouseEvent, useState } from "react";
+import {
+  AppBar,
+  Box,
+  Button,
+  Container,
+  FormControl,
+  IconButton, InputLabel,
+  Menu,
+  MenuItem, Select, SelectChangeEvent,
+  Toolbar,
+  Typography
+} from "@mui/material";
 import { useAppSelector } from "../../hooks";
 import { Menu as MenuIcon, Logout as LogoutIcon } from '@mui/icons-material';
 import { useDispatch } from "react-redux";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/fb_config";
 import { logout } from "../../slices/authSlice";
+import {openModal, setActive} from "../../slices/boardSlice";
+import {Board} from "../../interfaces";
 
 export const Navbar = () => {
   const user = useAppSelector((state) => state.auth.user);
+  const {boards, active} = useAppSelector((state) => state.board);
   const [burgerAnchorEl, setBurgerAnchorEl] = useState<null | HTMLElement>(null);
   const dispatch = useDispatch();
 
@@ -23,6 +37,14 @@ export const Navbar = () => {
   const handleCloseNavMenu = () => {
     setBurgerAnchorEl(null);
   };
+
+  const handleBoardChange = (event: SelectChangeEvent<string>) => {
+    dispatch(setActive(event.target.value));
+  }
+
+  const openBoardModal = () => {
+    dispatch(openModal('boardForm'))
+  }
 
   return (
     <AppBar position="static" sx={{ height: '72px' }}>
@@ -98,6 +120,35 @@ export const Navbar = () => {
           >
             XBoard
           </Typography>
+          { user &&
+              <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                  <FormControl variant="outlined" size="small" sx={{ my: 2, color: 'white', minWidth: 150 }}>
+                      <InputLabel id="select-label" sx={{ color: 'white' }}>Board</InputLabel>
+                      <Select
+                          labelId="select-label"
+                          value={active}
+                          onChange={handleBoardChange}
+                          label="Board"
+                          sx={{ color: 'white' }}
+                      >
+                        { boards &&
+                          Object.entries(boards as Record<string, Board>).map(([id, board]: [string, Board]) => (
+                            <MenuItem key={id} value={id}>
+                              {board.name}
+                            </MenuItem>
+                          ))
+                        }
+                      </Select>
+                  </FormControl>
+                  <Button
+                      key={'docs'}
+                      onClick={openBoardModal}
+                      sx={{ my: 2, color: 'white', display: 'block' }}
+                  >
+                      Add Board
+                  </Button>
+              </Box>
+          }
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
               <Button
                 key={'docs'}

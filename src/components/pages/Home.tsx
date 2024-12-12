@@ -3,6 +3,7 @@ import { Box, Typography } from "@mui/material";
 
 
 export const Home: FC = () => {
+
   return(
     <Box p={2} sx={{ minHeight: 'calc(100vh - 104px)' }}>
       <Typography variant="h4">Welcome to MyApp!</Typography>

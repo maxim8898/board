@@ -1,8 +1,11 @@
 import Board from "./Board";
 
 export interface BoardStore {
-  boards: Map<string, Board>,
+  boards: Record<string, Board>,
   active: string,
+  loading: boolean,
+  isModalOpen: boolean,
+  currentModalForm: string,
 }
 
 export default BoardStore;
