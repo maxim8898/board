@@ -11,7 +11,7 @@ interface ModalWrapperProps {
   height?: string | number;
 }
 
-const Modal: React.FC<ModalWrapperProps> = ({
+export const Modal: React.FC<ModalWrapperProps> = ({
                                                      open,
                                                      onClose,
                                                      title,

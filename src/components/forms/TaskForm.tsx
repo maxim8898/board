@@ -1,12 +1,12 @@
-import {FC} from "react";
-import {useForm} from "react-hook-form";
-import {Box, Button, TextField} from "@mui/material";
+import { FC } from "react";
+import { useForm } from "react-hook-form";
+import { Box, Button, TextField } from "@mui/material";
 import { v4 as uuid } from "uuid";
 import { set, ref } from "firebase/database";
-import {database} from "../../config/fb_config";
-import {useAppDispatch} from "../../hooks";
-import {closeModal} from "../../slices/boardSlice";
-import {Task} from "../../interfaces";
+import { database } from "../../config/fb_config";
+import { useAppDispatch } from "../../hooks";
+import { closeModal } from "../../slices/boardSlice";
+import { Task } from "../../interfaces";
 
 interface TaskFormInputs {
   title: string,

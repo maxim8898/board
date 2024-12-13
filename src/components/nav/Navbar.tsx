@@ -1,4 +1,4 @@
-import React, { MouseEvent, useState } from "react";
+import { MouseEvent, useState } from "react";
 import {
   AppBar,
   Box,
@@ -17,10 +17,10 @@ import { useDispatch } from "react-redux";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/fb_config";
 import { logout } from "../../slices/authSlice";
-import {closeModal, openModal, setActive} from "../../slices/boardSlice";
-import {Board} from "../../interfaces";
-import Modal from "../ui/Modal";
-import BoardForm from "../forms/BoardForm";
+import { closeModal, openModal, setActive } from "../../slices/boardSlice";
+import { Board } from "../../interfaces";
+import { Modal } from "../ui";
+import { BoardForm } from "../forms";
 
 export const Navbar = () => {
   const user = useAppSelector((state) => state.auth.user);
@@ -165,7 +165,7 @@ export const Navbar = () => {
               { user &&
                 <>
                   <Typography sx={{ color: 'white', marginRight: 2, display: { xs: 'none', md: 'flex' } }}>
-                    {user.email}
+                    { user.email }
                   </Typography>
                     <IconButton onClick={handleLogout} sx={{ p: 3, color: 'white' }}>
                         <LogoutIcon />
@@ -176,8 +176,8 @@ export const Navbar = () => {
           </Toolbar>
         </Container>
       </AppBar>
-      {isModalOpen && currentModalForm === 'boardForm' &&
-        <Modal open={isModalOpen} onClose={() => dispatch(closeModal())}>
+      { isModalOpen && currentModalForm === 'boardForm' &&
+        <Modal open={ isModalOpen } onClose={() => dispatch(closeModal())}>
           <BoardForm />
         </Modal>
       }

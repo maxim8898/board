@@ -1,11 +1,11 @@
 import {FC} from "react";
-import {useForm} from "react-hook-form";
-import {Box, Typography, Button, TextField} from "@mui/material";
+import { useForm } from "react-hook-form";
+import { Box, Typography, Button, TextField } from "@mui/material";
 import { v4 as uuid } from "uuid";
 import { set, ref } from "firebase/database";
-import {database} from "../../config/fb_config";
-import {useAppDispatch} from "../../hooks";
-import {closeModal, setActive} from "../../slices/boardSlice";
+import { database } from "../../config/fb_config";
+import { useAppDispatch } from "../../hooks";
+import { closeModal, setActive } from "../../slices/boardSlice";
 
 interface BoardFormInputs {
   title: string,
