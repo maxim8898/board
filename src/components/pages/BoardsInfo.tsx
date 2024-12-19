@@ -1,15 +1,11 @@
-import { ReactElement, FC, useEffect } from "react";
+import { FC, useEffect, PropsWithChildren } from "react";
 import { database } from '../../config/fb_config';
 import { onValue, ref } from "firebase/database";
 import { startSpin, setBoards } from "../../slices/boardSlice";
 import { Box, CircularProgress } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 
-interface BoardsInfoProps {
-  children: ReactElement,
-}
-
-export const BoardsInfo: FC<BoardsInfoProps> = ({ children }: BoardsInfoProps) => {
+export const BoardsInfo: FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.user);
   const loading = useAppSelector((state) => state.board.loading);
