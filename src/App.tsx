@@ -5,6 +5,7 @@ import { Navbar } from "./components/nav";
 import { store } from "./store";
 import { Provider } from 'react-redux';
 import { Login, Register, Home, RestrictedRoute, NonRestrictedRoute } from "./components/pages";
+import BoardsInfo from "./components/pages/BoardsInfo";
 
 const theme = createTheme({
   components: {
@@ -22,26 +23,28 @@ const App: FC = () => {
   return (
     <BrowserRouter>
       <Provider store={store}>
-          <ThemeProvider theme={theme}>
-            <Navbar />
-            <Routes>
-              <Route path='/' element={
-                <RestrictedRoute>
+        <ThemeProvider theme={theme}>
+          <Navbar />
+          <Routes>
+            <Route path='/' element={
+              <RestrictedRoute>
+                <BoardsInfo>
                   <Home />
-                </RestrictedRoute>
-              } />
-              <Route path='/login' element={
-                <NonRestrictedRoute>
-                  <Login />
-                </NonRestrictedRoute>
-              } />
-              <Route path='/register' element={
-                <NonRestrictedRoute>
-                  <Register />
-                </NonRestrictedRoute>
-              } />
-            </Routes>
-          </ThemeProvider>
+                </BoardsInfo>
+              </RestrictedRoute>
+            } />
+            <Route path='/login' element={
+              <NonRestrictedRoute>
+                <Login />
+              </NonRestrictedRoute>
+            } />
+            <Route path='/register' element={
+              <NonRestrictedRoute>
+                <Register />
+              </NonRestrictedRoute>
+            } />
+          </Routes>
+        </ThemeProvider>
       </Provider>
     </BrowserRouter>
   );

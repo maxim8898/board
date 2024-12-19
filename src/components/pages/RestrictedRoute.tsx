@@ -1,4 +1,4 @@
-import { ReactElement, FC, useEffect } from "react";
+import { FC, useEffect, PropsWithChildren } from "react";
 import { auth } from '../../config/fb_config';
 import { useDispatch, useSelector } from "react-redux";
 import { startSpin, stopSpin, loginSuccess } from "../../slices/authSlice";
@@ -6,11 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { RootState } from "../../store";
 import { Box, CircularProgress } from "@mui/material";
 
-interface RestrictedRouteProps {
-  children: ReactElement,
-}
-
-export const RestrictedRoute: FC<RestrictedRouteProps> = ({ children }: RestrictedRouteProps) => {
+export const RestrictedRoute: FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading } = useSelector((state: RootState) => state.auth);

@@ -1,15 +1,14 @@
 import { FC } from "react";
-import { Box, Typography } from "@mui/material";
-
+import { Container } from "@mui/material";
+import { Board } from "../ui";
 
 export const Home: FC = () => {
-  return(
-    <Box p={2} sx={{ minHeight: 'calc(100vh - 104px)' }}>
-      <Typography variant="h4">Welcome to MyApp!</Typography>
-      <Typography variant="body1">
-        This is a simple starting page with a top navigation bar.
-      </Typography>
-    </Box>
+  return (
+    <>
+      <Container maxWidth="xl" sx={{ height: '100%' }}>
+        <Board />
+      </Container>
+    </>
   );
 }
 
