@@ -2,6 +2,7 @@ import { FC } from "react"
 import { Box, Button, Typography } from "@mui/material";
 import { Section , Task } from "../../interfaces";
 import { TaskCard } from "./index";
+import { useDroppable } from "@dnd-kit/core";
 
 interface ColumnProps {
   column: Section,
@@ -12,8 +13,12 @@ interface ColumnProps {
 }
 
 export const Column: FC<ColumnProps> = ({ column, addTaskHandler, taskFormHandler }) => {
+  const { isOver, setNodeRef } = useDroppable({
+    id: column.id,
+  })
   return (
     <Box
+      ref={ setNodeRef }
       key={ column.id }
       sx={{
         minWidth: 300,
@@ -38,6 +43,7 @@ export const Column: FC<ColumnProps> = ({ column, addTaskHandler, taskFormHandle
         { column.tasks && Object.entries(column.tasks as Record<string, Task>)
           .map(([id, task]: [string, Task]) => (
           <TaskCard
+            key={ id }
             task={ task }
             onClick={() => taskFormHandler(id)}
           />

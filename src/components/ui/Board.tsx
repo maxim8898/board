@@ -5,6 +5,9 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { closeModal, openModal } from "../../slices/boardSlice";
 import { Column, Modal } from "./index"
 import { TaskForm } from "../forms";
+import { DndContext } from "@dnd-kit/core";
+import { ref, set } from "firebase/database";
+import { database } from "../../config/fb_config";
 
 interface TaskFormProps {
   id?: string,
@@ -57,14 +60,38 @@ export const Board: FC = () => {
     }
   }
 
+  const handleDragEnd = async (event: any) => {
+    if (!event.over) {
+      return;
+    }
+
+    const taskId = event.active.id;
+    const newColumn = event.over.id;
+    const oldColumn = event.active.data.current.column;
+
+    if (newColumn === oldColumn) {
+      return;
+    }
+
+    const task = {
+      ...activeBoard['columns'][oldColumn]['tasks'][taskId],
+      section: newColumn,
+    }
+    const newTasksRef = ref(database, `/boards/${active}/columns/${newColumn}/tasks/${taskId}`);
+    await set(newTasksRef, task);
+    const oldTasksRef = ref(database, `/boards/${active}/columns/${oldColumn}/tasks/${taskId}`);
+    await set(oldTasksRef, null);
+  }
+
   return (
-    <>
+    <DndContext onDragEnd={ handleDragEnd }>
       <Box sx={{ display: 'flex', gap: 2, padding: 2, overflowX: 'auto' }}>
         { boards && activeBoard && activeBoard.columns && Object.entries(activeBoard.columns as Record<string, Section>)
           .sort(([, a], [, b]) => (a.weight || 0) - (b.weight || 0))
           .map(([id, column]: [string, Section]) => (
             <Column
-              column={column}
+              key={ id }
+              column={ column }
               addTaskHandler={() => openTaskForm(column.board, column.id, 'create')}
               taskFormHandler={(id) => openTaskForm(column.board, column.id, 'edit', id)}
             />
@@ -85,7 +112,7 @@ export const Board: FC = () => {
               />
           </Modal>
       }
-    </>
+    </DndContext>
   )
 }
 
