@@ -5,7 +5,7 @@ import { Navbar } from "./components/nav";
 import { store } from "./store";
 import { Provider } from 'react-redux';
 import { Login, Register, Home, RestrictedRoute, NonRestrictedRoute } from "./components/pages";
-import BoardsInfo from "./components/pages/BoardsInfo";
+import { BoardsInfo, Profile } from "./components/pages";
 
 const theme = createTheme({
   components: {
@@ -30,6 +30,13 @@ const App: FC = () => {
               <RestrictedRoute>
                 <BoardsInfo>
                   <Home />
+                </BoardsInfo>
+              </RestrictedRoute>
+            } />
+            <Route path='/profile' element={
+              <RestrictedRoute>
+                <BoardsInfo>
+                  <Profile />
                 </BoardsInfo>
               </RestrictedRoute>
             } />

@@ -19,14 +19,16 @@ import { auth } from "../../config/fb_config";
 import { logout } from "../../slices/authSlice";
 import { closeModal, openModal, setActive } from "../../slices/boardSlice";
 import { Board } from "../../interfaces";
-import { Modal } from "../ui";
+import { Modal, ProfileAvatar } from "../ui";
 import { BoardForm } from "../forms";
+import { useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
   const user = useAppSelector((state) => state.auth.user);
   const {boards, active, isModalOpen, currentModalForm} = useAppSelector((state) => state.board);
   const [burgerAnchorEl, setBurgerAnchorEl] = useState<null | HTMLElement>(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -164,8 +166,11 @@ export const Navbar = () => {
             <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 0 }}>
               { user &&
                 <>
-                  <Typography sx={{ color: 'white', marginRight: 2, display: { xs: 'none', md: 'flex' } }}>
-                    { user.email }
+                  <Typography onClick={() => {navigate('/profile')}} sx={{ color: 'white', marginRight: 2, display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: '20px', cursor: 'pointer' }}>
+                    <>
+                    { user.name }
+                        <ProfileAvatar alt='avatar' name={user.avatar ? user.avatar : 'default'} />
+                    </>
                   </Typography>
                     <IconButton onClick={handleLogout} sx={{ p: 3, color: 'white' }}>
                         <LogoutIcon />
