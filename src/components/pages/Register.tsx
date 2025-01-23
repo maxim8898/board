@@ -21,7 +21,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { useForm, Controller } from "react-hook-form";
 import { FirebaseError } from "@firebase/util";
-import { avatarMap, ProfileAvatar } from "../ui/ProfileAvatar";
+import { ProfileAvatar } from "../ui/ProfileAvatar";
+import avatars from "../../config/avatars";
 import { ref, set } from "firebase/database";
 
 interface RegisterFormInputs {
@@ -124,7 +125,7 @@ export const Register: FC = () => {
           />
 
           <Grid container spacing={2}>
-            {Object.entries(avatarMap as Record<string, string>).map(([name, src]: [string, string]) => (
+            {Object.keys(avatars).map((name) => (
               <Grid item key={name}>
                 <FormControlLabel
                   value={name}

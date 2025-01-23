@@ -1,11 +1,12 @@
 import { FC } from "react";
 import { useForm } from "react-hook-form";
-import { Box, Typography, Button, Grid, FormControlLabel, Radio, TextField, Input, Container } from "@mui/material";
+import { Box, Typography, Button, Grid, FormControlLabel, Radio, Input, Container } from "@mui/material";
 import { set, ref } from "firebase/database";
 import { database } from "../../config/fb_config";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { setUser } from "../../slices/authSlice";
-import { avatarMap, ProfileAvatar } from "../ui/ProfileAvatar";
+import { ProfileAvatar } from "../ui/ProfileAvatar";
+import avatars from "../../config/avatars";
 
 interface UserFormInputs {
   email: string | null;
@@ -103,7 +104,7 @@ export const UserForm: FC = () => {
           />
 
           <Grid container spacing={2}>
-            {Object.entries(avatarMap as Record<string, string>).map(([name, src]: [string, string]) => (
+            {Object.keys(avatars).map((name) => (
               <Grid item key={name}>
                 <FormControlLabel
                   value={name}
