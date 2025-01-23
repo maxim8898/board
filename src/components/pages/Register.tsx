@@ -1,20 +1,36 @@
 import { FC, useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../config/fb_config";
+import { auth, database } from "../../config/fb_config";
 import { registerStart, registerSuccess, registerFailure } from "../../slices/authSlice";
 import { useAppDispatch } from "../../hooks";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, ButtonGroup, Container, IconButton, Input, InputAdornment, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Container,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  Input,
+  InputAdornment, Radio,
+  Typography
+} from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { useForm, Controller } from "react-hook-form";
 import { FirebaseError } from "@firebase/util";
+import { ProfileAvatar } from "../ui/ProfileAvatar";
+import avatars from "../../config/avatars";
+import { ref, set } from "firebase/database";
 
 interface RegisterFormInputs {
   email: string;
   password: string;
   confirmPassword: string;
+  name: string | null;
+  avatar: string | null;
 }
 
 export const Register: FC = () => {
@@ -26,11 +42,13 @@ export const Register: FC = () => {
   const {
     handleSubmit,
     control,
+    register,
     watch,
     setError,
     formState: { errors },
   } = useForm<RegisterFormInputs>();
 
+  const selectedAvatar = watch("avatar");
   const password = watch("password");
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -44,7 +62,15 @@ export const Register: FC = () => {
     dispatch(registerStart());
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
-      dispatch(registerSuccess(userCredential.user));
+      const usersRef = ref(database, `/users/${userCredential.user.uid}`);
+      const updatedUser = {
+        ...userCredential.user,
+        avatar: data.avatar,
+        name: data.name,
+        email: data.email,
+      };
+      await set(usersRef, { uid: updatedUser.uid, name: updatedUser.name, email: updatedUser.email, avatar: updatedUser.avatar });
+      dispatch(registerSuccess({ ...updatedUser }));
       navigate("/");
     } catch (err) {
       if (err instanceof FirebaseError) {
@@ -80,6 +106,53 @@ export const Register: FC = () => {
           noValidate
           onSubmit={handleSubmit(onSubmit)}
         >
+          <Input
+            {...register("name", {
+              required: "Name is required",
+              pattern: {
+                value: /^(?=[a-zA-Z0-9._]{3,20}$)(?!.*[_.]{2})[^_.].*[^_.]$/,
+                message: "Invalid name format",
+              },
+            })}
+            placeholder="Name"
+            fullWidth
+            sx={{
+              border: errors.email ? "1px solid red" : "1px solid #ccc",
+              padding: "8px",
+              borderRadius: "4px",
+            }}
+            required
+          />
+
+          <Grid container spacing={2}>
+            {Object.keys(avatars).map((name) => (
+              <Grid item key={name}>
+                <FormControlLabel
+                  value={name}
+                  control={
+                    <Radio
+                      {...register("avatar")}
+                      sx={{ display: "none" }}
+                    />
+                  }
+                  label={
+                    <Box
+                      sx={{
+                        borderRadius: "50%",
+                        overflow: "hidden",
+                        boxShadow: selectedAvatar === name ? "0 0 6px 6px rgb(166 166 166)" : "none",
+                        transition: "box-shadow 0.3s ease",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <ProfileAvatar alt={`avatar ${name}`} name={name} />
+                    </Box>
+                  }
+                />
+              </Grid>
+            ))}
+          </Grid>
+
           <Controller
             name="email"
             control={control}

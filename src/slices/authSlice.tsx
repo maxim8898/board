@@ -50,6 +50,9 @@ const authSlice = createSlice({
     stopSpin(state) {
       state.loading = false;
     },
+    setUser(state, action: PayloadAction<User>) {
+      state.user = action.payload;
+    },
   },
 });
 
@@ -63,6 +66,7 @@ export const {
   registerFailure,
   startSpin,
   stopSpin,
+  setUser,
 } = authSlice.actions;
 
 export default authSlice.reducer;

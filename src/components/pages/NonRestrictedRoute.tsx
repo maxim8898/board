@@ -19,6 +19,8 @@ export const NonRestrictedRoute: FC<PropsWithChildren> = ({ children }: PropsWit
         dispatch(loginSuccess({
           email: user.email,
           uid: user.uid,
+          name: null,
+          avatar: null,
         }));
         navigate('/');
       } else {

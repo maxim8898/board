@@ -33,7 +33,7 @@ export const Login: FC = () => {
     dispatch(loginStart());
     try {
       const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
-      dispatch(loginSuccess(userCredential.user));
+      dispatch(loginSuccess({...userCredential.user, name: null, avatar: null}));
     } catch (err) {
       if (err instanceof FirebaseError) {
         if (err.code === 'auth/invalid-credential') {

@@ -1,4 +1,4 @@
-import {FC} from "react";
+import { FC } from "react";
 import { useForm } from "react-hook-form";
 import { Box, Typography, Button, TextField } from "@mui/material";
 import { v4 as uuid } from "uuid";
