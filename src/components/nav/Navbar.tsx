@@ -22,11 +22,23 @@ import { Board } from "../../interfaces";
 import { Modal, ProfileAvatar } from "../ui";
 import { BoardForm } from "../forms";
 import { useNavigate } from "react-router-dom";
+import boardForm from "../forms/BoardForm";
+
+interface BoardFormProps {
+  id?: string,
+  name?: string,
+  owner?: string,
+  contributors?: string[],
+  formMode: 'create' | 'edit',
+}
 
 export const Navbar = () => {
   const user = useAppSelector((state) => state.auth.user);
   const {boards, active, isModalOpen, currentModalForm} = useAppSelector((state) => state.board);
   const [burgerAnchorEl, setBurgerAnchorEl] = useState<null | HTMLElement>(null);
+  const [boardFormProps, setBoardFormProps] = useState<BoardFormProps>({
+    formMode: 'create',
+  });
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -46,8 +58,33 @@ export const Navbar = () => {
     dispatch(setActive(event.target.value));
   }
 
-  const openBoardModal = () => {
-    dispatch(openModal({formId: 'boardForm'}));
+  const openBoardModal = (formMode: 'create' | 'edit', boardId?: string) => {
+    switch (formMode) {
+      case 'create':
+        setBoardFormProps(prevState => ({
+          ...prevState,
+          id: undefined,
+          name: undefined,
+          owner: undefined,
+          contributors: undefined,
+        }));
+        dispatch(openModal({formId: 'boardForm'}));
+        break;
+
+      case 'edit':
+        if (boardId) {
+          const board = boards[boardId];
+          setBoardFormProps(prevState => ({
+            ...prevState,
+            id: boardId,
+            name: board['name'],
+            owner: board['owner'],
+            contributors: board['contributors'],
+          }));
+          dispatch(openModal({formId: 'boardForm'}));
+        }
+        break;
+    }
   }
 
   return (
@@ -145,10 +182,21 @@ export const Navbar = () => {
                           }
                         </Select>
                     </FormControl>
+
+                    { active && boards && boards[active].owner == user.uid  &&
+                        <Button
+                            key={'board-settings'}
+                            onClick={() => openBoardModal('edit', active)}
+                            sx={{ my: 2, mx: 2, color: 'white', display: 'block' }}
+                        >
+                            Settings
+                        </Button>
+                    }
+
                     <Button
                         key={'add-board'}
-                        onClick={openBoardModal}
-                        sx={{ my: 2, color: 'white', display: 'block' }}
+                        onClick={() => openBoardModal('create')}
+                        sx={{ my: 2, mx: 2, color: 'white', display: 'block' }}
                     >
                         Add Board
                     </Button>
@@ -167,14 +215,14 @@ export const Navbar = () => {
               { user &&
                 <>
                   <Typography onClick={() => {navigate('/profile')}} sx={{ color: 'white', marginRight: 2, display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: '20px', cursor: 'pointer' }}>
-                    <>
                     { user.name }
-                        <ProfileAvatar alt='avatar' name={user.avatar ? user.avatar : 'default'} />
-                    </>
                   </Typography>
-                    <IconButton onClick={handleLogout} sx={{ p: 3, color: 'white' }}>
-                        <LogoutIcon />
-                    </IconButton>
+
+                  <ProfileAvatar alt='avatar' name={user.avatar ? user.avatar : 'default'} />
+
+                  <IconButton onClick={handleLogout} sx={{ p: 3, color: 'white' }}>
+                      <LogoutIcon />
+                  </IconButton>
                 </>
               }
             </Box>
@@ -183,7 +231,13 @@ export const Navbar = () => {
       </AppBar>
       { isModalOpen && currentModalForm === 'boardForm' &&
         <Modal open={ isModalOpen } onClose={() => dispatch(closeModal())}>
-          <BoardForm />
+          <BoardForm
+            id = { boardFormProps.id }
+            name = { boardFormProps.name }
+            owner = { boardFormProps.owner }
+            contributors = { boardFormProps.contributors }
+            formMode = { boardFormProps.formMode }
+          />
         </Modal>
       }
     </>
