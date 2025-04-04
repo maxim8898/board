@@ -13,6 +13,7 @@ interface TaskFormProps {
   id?: string,
   title?: string,
   description?: string,
+  assignee: string,
   board: string,
   section?: string,
   formMode: 'create' | 'edit',
@@ -22,7 +23,8 @@ export const Board: FC = () => {
   const {boards, active, isModalOpen, currentModalForm} = useAppSelector((state) => state.board);
   const [taskFormProps, setTaskFormProps] = useState<TaskFormProps>({
     board: active,
-    formMode: 'create'
+    formMode: 'create',
+    assignee: 'unassigned',
   });
   const activeBoard = boards[active];
   const dispatch = useAppDispatch();
@@ -38,6 +40,7 @@ export const Board: FC = () => {
           id: undefined,
           title: undefined,
           description: undefined,
+          assignee: 'unassigned',
         }));
         dispatch(openModal({formId: 'taskForm'}))
         break;
@@ -53,6 +56,7 @@ export const Board: FC = () => {
             id: taskId,
             title: task['title'],
             description: task['description'],
+            assignee: task['assignee'],
           }));
           dispatch(openModal({formId: 'taskForm'}))
         }
@@ -109,6 +113,7 @@ export const Board: FC = () => {
                   id={ taskFormProps.id }
                   title={ taskFormProps.title }
                   description={ taskFormProps.description }
+                  assignee={ taskFormProps.assignee }
               />
           </Modal>
       }

@@ -13,7 +13,7 @@ interface ColumnProps {
 }
 
 export const Column: FC<ColumnProps> = ({ column, addTaskHandler, taskFormHandler }) => {
-  const { isOver, setNodeRef } = useDroppable({
+  const { setNodeRef } = useDroppable({
     id: column.id,
   })
   return (
@@ -44,7 +44,9 @@ export const Column: FC<ColumnProps> = ({ column, addTaskHandler, taskFormHandle
           .map(([id, task]: [string, Task]) => (
           <TaskCard
             key={ id }
-            task={ task }
+            taskId={ id }
+            column={ column.id }
+            board={ column.board }
             onClick={() => taskFormHandler(id)}
           />
         ))}
