@@ -8,6 +8,7 @@ export interface Task {
   author: string,
   created: number,
   updated: number,
+  assignee: string,
 }
 
 export default Task;
