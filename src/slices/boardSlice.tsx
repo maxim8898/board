@@ -3,7 +3,7 @@ import {Board, BoardStore} from "../interfaces";
 
 const initialState: BoardStore = {
   boards: {},
-  active: 'd25a309a-60c4-49c7-acd6-40149feed84d',
+  active: '',
   loading: false,
   isModalOpen: false,
   currentModalForm: '',

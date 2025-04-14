@@ -1,8 +1,8 @@
-import { FC } from "react";
-import { useForm } from "react-hook-form";
-import { Box, Button, TextField } from "@mui/material";
+import { FC, useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Autocomplete, Box, Button, TextField } from "@mui/material";
 import { v4 as uuid } from "uuid";
-import { set, ref } from "firebase/database";
+import { set, ref, onValue } from "firebase/database";
 import { database } from "../../config/fb_config";
 import { useAppDispatch } from "../../hooks";
 import { closeModal } from "../../slices/boardSlice";
@@ -12,28 +12,50 @@ interface TaskFormInputs {
   title: string,
   description: string,
   status: boolean,
+  assignee: string,
 }
 
 interface TaskFormProps {
   id?: string,
   title?: string,
   description?: string,
+  assignee: string,
   board: string,
   section?: string,
   formMode: 'create' | 'edit',
 }
 
-export const TaskForm: FC<TaskFormProps> = ({board, section, id, title, description, formMode}) => {
+interface User {
+  uid: string;
+  name: string;
+}
+
+export const TaskForm: FC<TaskFormProps> = ({board, section, id, title, description, assignee, formMode}) => {
   const dispatch = useAppDispatch();
+
+  const [availableUsers, setAvailableUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    const usersRef = ref(database, "/users/");
+    onValue(usersRef, (snapshot) => {
+      if (snapshot.exists()) {
+        setAvailableUsers(
+          Object.values(snapshot.val()).map((user: any) => ({ uid: user.uid, name: user.name }))
+        );
+      }
+    });
+  }, []);
 
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<TaskFormInputs>({
     defaultValues: {
       title: title,
       description: description,
+      assignee: assignee,
     }
   });
   const onSubmit = async (data: TaskFormInputs) => {
@@ -49,6 +71,7 @@ export const TaskForm: FC<TaskFormProps> = ({board, section, id, title, descript
       author: 'admin',
       created: 1,
       updated: 1,
+      assignee: data.assignee,
     };
     await set(tasksRef, {...task});
     dispatch(closeModal());
@@ -87,6 +110,23 @@ export const TaskForm: FC<TaskFormProps> = ({board, section, id, title, descript
         variant="outlined"
         error={!!errors.description}
         helperText={errors.description ? errors.description.message : ""}
+      />
+
+      <Controller
+        name="assignee"
+        control={control}
+        render={({ field }) => (
+          <Autocomplete
+            options={availableUsers}
+            value={availableUsers.find(user => user.uid === field.value) || null}
+            getOptionLabel={(option) => option.name}
+            onChange={(_, newValue) => {
+              const newAssignee = newValue ? newValue.uid : "unassigned";
+              field.onChange(newAssignee);
+            }}
+            renderInput={(params) => <TextField {...params} label="Assignee" variant="outlined" />}
+          />
+        )}
       />
 
       <Button type="submit" variant="contained" color="primary">
